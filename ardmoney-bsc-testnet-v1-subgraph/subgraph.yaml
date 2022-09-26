@@ -1,6 +1,6 @@
 specVersion: 0.0.2
 description: ArdMoney BSC TestNet Subgraph
-repository: https://github.com/DiverseSolutions/ArdMoney-BSC-TestNet-Subgraph
+repository: https://github.com/DiverseSolutions/ardmoney-subgraphs
 schema:
   file: ./schema.graphql
 dataSources:
