@@ -111,7 +111,7 @@ type Pair @entity {
 
 type User @entity {
   id: ID!
-  liquidityPositions: [LiquidityPosition!] @derivedFrom(field: "user")
+  liquidityPositions: [LiquidityPosition!]! @derivedFrom(field: "user")
   usdSwapped: BigDecimal!
 }
 
@@ -145,9 +145,9 @@ type Transaction @entity {
   timestamp: BigInt!
   # This is not the reverse of Mint.transaction; it is only used to
   # track incomplete mints (similar for burns and swaps)
-  mints: [Mint]!
-  burns: [Burn]!
-  swaps: [Swap]!
+  mints: [Mint!]!
+  burns: [Burn!]!
+  swaps: [Swap!]!
 }
 
 type Mint @entity {
