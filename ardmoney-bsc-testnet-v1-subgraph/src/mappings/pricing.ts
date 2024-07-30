@@ -98,6 +98,10 @@ export function findEthPerToken(token: Token): BigDecimal {
   return ZERO_BD
 }
 
+function getSafePrice(value: BigDecimal | null, defaultValue: BigDecimal): BigDecimal {
+  return value !== null ? value : defaultValue
+}
+
 export function getTrackedVolumeUSD(
   tokenAmount0: BigDecimal,
   token0: Token,
@@ -111,8 +115,8 @@ export function getTrackedVolumeUSD(
     return ZERO_BD
   }
 
-  let price0 = token0.derivedETH ? token0.derivedETH.times(bundle.ethPrice) : ZERO_BD
-  let price1 = token1.derivedETH ? token1.derivedETH.times(bundle.ethPrice) : ZERO_BD
+  let price0 = getSafePrice(token0.derivedETH, ZERO_BD).times(bundle.ethPrice)
+  let price1 = getSafePrice(token1.derivedETH, ZERO_BD).times(bundle.ethPrice)
 
   if (UNTRACKED_PAIRS.includes(pair.id)) {
     return ZERO_BD
@@ -171,8 +175,9 @@ export function getTrackedLiquidityUSD(
     return ZERO_BD
   }
 
-  let price0 = token0.derivedETH ? token0.derivedETH.times(bundle.ethPrice) : ZERO_BD
-  let price1 = token1.derivedETH ? token1.derivedETH.times(bundle.ethPrice) : ZERO_BD
+  let price0 = getSafePrice(token0.derivedETH, ZERO_BD).times(bundle.ethPrice)
+  let price1 = getSafePrice(token1.derivedETH, ZERO_BD).times(bundle.ethPrice)
+
   if (WHITELIST.includes(token0.id) && WHITELIST.includes(token1.id)) {
     return tokenAmount0.times(price0).plus(tokenAmount1.times(price1))
   }

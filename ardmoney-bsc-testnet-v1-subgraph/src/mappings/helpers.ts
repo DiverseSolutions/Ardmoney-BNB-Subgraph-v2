@@ -184,21 +184,25 @@ export function createLiquiditySnapshot(position: LiquidityPosition, event: ethe
     return
   }
 
-  // create new snapshot
+  // Create new snapshot
   let snapshot = new LiquidityPositionSnapshot(position.id.concat(timestamp.toString()))
   snapshot.liquidityPosition = position.id
   snapshot.timestamp = timestamp
   snapshot.block = event.block.number.toI32()
   snapshot.user = position.user
   snapshot.pair = position.pair
-  snapshot.token0PriceUSD = (token0.derivedETH ? token0.derivedETH : ZERO_BD).times(bundle.ethPrice)
-  snapshot.token1PriceUSD = (token1.derivedETH ? token1.derivedETH : ZERO_BD).times(bundle.ethPrice)
+  snapshot.token0PriceUSD = ((token0.derivedETH !== null ? token0.derivedETH : ZERO_BD) as BigDecimal).times(
+    bundle.ethPrice
+  )
+  snapshot.token1PriceUSD = ((token1.derivedETH !== null ? token1.derivedETH : ZERO_BD) as BigDecimal).times(
+    bundle.ethPrice
+  )
+
   snapshot.reserve0 = pair.reserve0
   snapshot.reserve1 = pair.reserve1
   snapshot.reserveUSD = pair.reserveUSD
   snapshot.liquidityTokenTotalSupply = pair.totalSupply
   snapshot.liquidityTokenBalance = position.liquidityTokenBalance
-  snapshot.liquidityPosition = position.id
   snapshot.save()
   position.save()
 }
