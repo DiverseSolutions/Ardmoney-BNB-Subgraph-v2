@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
 import { Pair, Token, Bundle } from '../types/schema'
-import { BigDecimal, Address, BigInt, log } from '@graphprotocol/graph-ts/index'
+import { BigDecimal, Address, BigInt, log } from '@graphprotocol/graph-ts'
 import { ZERO_BD, factoryContract, ADDRESS_ZERO, ONE_BD, UNTRACKED_PAIRS } from './helpers'
 
 const WMATIC_ADDRESS = '0x094616f0bdfb0b526bd735bf66eca0ad254ca81f'

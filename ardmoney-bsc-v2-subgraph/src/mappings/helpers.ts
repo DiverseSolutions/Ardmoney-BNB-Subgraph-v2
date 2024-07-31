@@ -53,7 +53,7 @@ export function isNullEthValue(value: string): boolean {
 }
 
 export function fetchTokenSymbol(tokenAddress: Address): string {
-  // static definitions overrides
+  // Static definitions overrides
   let staticDefinition = TokenDefinition.fromAddress(tokenAddress)
   if (staticDefinition !== null) {
     return staticDefinition.symbol
@@ -62,19 +62,20 @@ export function fetchTokenSymbol(tokenAddress: Address): string {
   let contract = ERC20.bind(tokenAddress)
   let contractSymbolBytes = ERC20SymbolBytes.bind(tokenAddress)
 
-  // try types string and bytes32 for symbol
   let symbolValue = 'unknown'
+
+  // Try fetching symbol from ERC20 contract
   let symbolResult = contract.try_symbol()
-  if (symbolResult.reverted) {
-    let symbolResultBytes = contractSymbolBytes.try_symbol()
-    if (!symbolResultBytes.reverted) {
-      // for broken pairs that have no symbol function exposed
-      if (!isNullEthValue(symbolResultBytes.value.toHexString())) {
-        symbolValue = symbolResultBytes.value.toString()
-      }
-    }
-  } else {
+  if (!symbolResult.reverted) {
     symbolValue = symbolResult.value
+  } else {
+    // Try fetching symbol from ERC20SymbolBytes contract
+    let symbolResultBytes = contractSymbolBytes.try_symbol()
+    if (!symbolResultBytes.reverted && !isNullEthValue(symbolResultBytes.value.toHexString())) {
+      symbolValue = symbolResultBytes.value.toString()
+    } else {
+      log.error('Symbol fetch failed for token: {}', [tokenAddress.toHexString()])
+    }
   }
 
   return symbolValue
@@ -119,22 +120,21 @@ export function fetchTokenTotalSupply(tokenAddress: Address): BigInt {
 }
 
 export function fetchTokenDecimals(tokenAddress: Address): BigInt {
-  // static definitions overrides
   let staticDefinition = TokenDefinition.fromAddress(tokenAddress)
   if (staticDefinition !== null) {
     return staticDefinition.decimals
   }
 
   let contract = ERC20.bind(tokenAddress)
-  // try types uint8 for decimals
-  let decimalValue = BigInt.fromI32(0) // Initialize with appropriate type
+  let decimalValue = BigInt.fromI32(0)
   let decimalResult = contract.try_decimals()
   if (!decimalResult.reverted) {
     decimalValue = BigInt.fromI32(decimalResult.value)
+  } else {
+    log.error('Decimals fetch failed for token: {}', [tokenAddress.toHexString()])
   }
   return decimalValue
 }
-
 export function createLiquidityPosition(exchange: Address, user: Address): LiquidityPosition {
   let id = exchange
     .toHexString()

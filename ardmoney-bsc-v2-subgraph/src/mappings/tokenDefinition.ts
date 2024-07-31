@@ -15,11 +15,12 @@ export class TokenDefinition {
     this.decimals = decimals
   }
 
-  // Get all tokens with a static defintion
-  // Get all tokens with a static defintion
-  static getStaticDefinitions(): Array<TokenDefinition> {
-    let staticDefinitions = new Array<TokenDefinition>(6)
+  // Get all tokens with a static definition
+  static getStaticDefinitions(): Array<TokenDefinition | null> {
+    // Initialize static definitions array
+    let staticDefinitions: Array<TokenDefinition | null> = []
 
+    // Define token definitions
     let tokenTKNA = new TokenDefinition(
       Address.fromString('0x8A250B3517AD8d59354D50af0D9be5c4Cd90F070'),
       'TKNA',
@@ -36,6 +37,11 @@ export class TokenDefinition {
     )
     staticDefinitions.push(tokenTKNB)
 
+    // Ensure the array does not contain any undefined or null elements
+    if (staticDefinitions.some(def => def === null)) {
+      throw new Error('Static token definitions array contains null values')
+    }
+
     return staticDefinitions
   }
 
@@ -47,7 +53,13 @@ export class TokenDefinition {
     // Search the definition using the address
     for (let i = 0; i < staticDefinitions.length; i++) {
       let staticDefinition = staticDefinitions[i]
-      if (staticDefinition.address.toHexString() == tokenAddressHex) {
+
+      // Check if staticDefinition is not null and has a valid address
+      if (
+        staticDefinition !== null &&
+        staticDefinition.address !== null &&
+        staticDefinition.address.toHexString() === tokenAddressHex
+      ) {
         return staticDefinition
       }
     }
