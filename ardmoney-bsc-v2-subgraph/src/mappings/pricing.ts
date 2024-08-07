@@ -3,15 +3,18 @@ import { Pair, Token, Bundle } from '../types/schema'
 import { BigDecimal, Address, BigInt, log } from '@graphprotocol/graph-ts'
 import { ZERO_BD, factoryContract, ADDRESS_ZERO, ONE_BD, UNTRACKED_PAIRS } from './helpers'
 
-const WMATIC_ADDRESS = '0x094616f0bdfb0b526bd735bf66eca0ad254ca81f'
-const MONT_ADDRESS = '0x9087f345f063b88a78b80d90eeb1da35288d183a'
+const WBNB_ADDRESS = '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c'
+const MONT_ADDRESS = '0x2d279fdecdf7f5705f5ff0bd80f8d9a305ea87f4'
+const ARDM_ADDRESS = '0xe849188f76c0da93b5ed310a1f72127914b3a7b9'
 
 export function getEthPriceInUSD(): BigDecimal {
   return ONE_BD
 }
 
 let WHITELIST: string[] = [
-  '0x2D9ee688D46FD1D39Eb3507BB58dCE3A3cab64D0', // ARDM
+  // '0xaf7acb54a773f6c6a4169654eaa8fad755468f50' // WMATIC
+  // '0xd26adf1fb375a08760aed4a5bcdd8527c7e191b1', // ARDX
+  ARDM_ADDRESS, // ARDM
   MONT_ADDRESS // MONT
 ]
 
@@ -75,7 +78,7 @@ export function getVolumeMNT(
 }
 
 export function findEthPerToken(token: Token): BigDecimal {
-  if (token.id == WMATIC_ADDRESS) {
+  if (token.id == WBNB_ADDRESS) {
     return ONE_BD
   }
 
