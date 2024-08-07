@@ -24,12 +24,19 @@ export function findMntPerToken(token: Token): BigDecimal {
   }
 
   for (let i = 0; i < WHITELIST.length; ++i) {
-    let pairAddress = factoryContract.getPair(Address.fromString(token.id), Address.fromString(WHITELIST[i]))
+    let pairAddressResult = factoryContract.try_getPair(Address.fromString(token.id), Address.fromString(WHITELIST[i]))
 
-    if (pairAddress.toHexString() != ADDRESS_ZERO) {
-      let pair = Pair.load(pairAddress.toHexString())
+    if (pairAddressResult.reverted) {
+      return ZERO_BD // Or handle this scenario as needed in your application
+    } else {
+      // Declare pairAddress here so it's accessible in both if and else blocks
+      let pairAddress = pairAddressResult.value
 
-      if (pair !== null) {
+      if (pairAddress.toHexString() != ADDRESS_ZERO) {
+        let pair = Pair.load(pairAddress.toHexString())
+        if (pair === null) {
+          continue
+        }
         if (pair.token0 == token.id) {
           let token0 = Token.load(pair.token0)
           let token1 = Token.load(pair.token1)
@@ -73,24 +80,32 @@ export function findEthPerToken(token: Token): BigDecimal {
   }
 
   for (let i = 0; i < WHITELIST.length; ++i) {
-    let pairAddress = factoryContract.getPair(Address.fromString(token.id), Address.fromString(WHITELIST[i]))
+    let pairAddressResult = factoryContract.try_getPair(Address.fromString(token.id), Address.fromString(WHITELIST[i]))
 
-    if (pairAddress.toHexString() != ADDRESS_ZERO) {
-      let pair = Pair.load(pairAddress.toHexString())
+    if (pairAddressResult.reverted) {
+      return ZERO_BD // Or handle this scenario as needed in your application
+    } else {
+      // Declare pairAddress here so it's accessible in both if and else blocks
+      let pairAddress = pairAddressResult.value
 
-      if (pair !== null) {
+      if (pairAddress.toHexString() != ADDRESS_ZERO) {
+        let pair = Pair.load(pairAddress.toHexString())
+        if (pair === null) {
+          continue
+        }
         if (pair.token0 == token.id && pair.reserveETH.gt(MINIMUM_LIQUIDITY_THRESHOLD_ETH)) {
           let token1 = Token.load(pair.token1)
-          if (token1 !== null) {
-            return pair.token1Price.times(token1.derivedETH as BigDecimal)
+          if (token1 === null) {
+            continue
           }
+          return pair.token1Price.times(token1.derivedETH as BigDecimal) // return token1 per our token * Eth per token 1
         }
-
         if (pair.token1 == token.id && pair.reserveETH.gt(MINIMUM_LIQUIDITY_THRESHOLD_ETH)) {
           let token0 = Token.load(pair.token0)
-          if (token0 !== null) {
-            return pair.token0Price.times(token0.derivedETH as BigDecimal)
+          if (token0 === null) {
+            continue
           }
+          return pair.token0Price.times(token0.derivedETH as BigDecimal) // return token0 per our token * ETH per token 0
         }
       }
     }

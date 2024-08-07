@@ -219,7 +219,7 @@ export function handleTransfer(event: Transfer): void {
 }
 
 export function handleSync(event: Sync): void {
-  let pair = Pair.load(event.address.toHex())
+  let pair = Pair.load(event.address.toHex())!
   if (pair === null) {
     // Handle the case where pair is not found, possibly log an error
     return
@@ -277,12 +277,12 @@ export function handleSync(event: Sync): void {
   bundle.ethPrice = getEthPriceInUSD()
   bundle.save()
 
-  token0.derivedETH = findEthPerToken(token0)
-  token1.derivedETH = findEthPerToken(token1)
+  token0.derivedETH = findEthPerToken(token0 as Token)
+  token1.derivedETH = findEthPerToken(token1 as Token)
 
   // MNT
-  token0.mnt = findMntPerToken(token0)
-  token1.mnt = findMntPerToken(token1)
+  token0.mnt = findMntPerToken(token0 as Token)
+  token1.mnt = findMntPerToken(token1 as Token)
 
   token0.save()
   token1.save()
@@ -290,7 +290,9 @@ export function handleSync(event: Sync): void {
   // Get tracked liquidity - will be 0 if neither is in whitelist
   let trackedLiquidityETH: BigDecimal
   if (bundle.ethPrice.notEqual(ZERO_BD)) {
-    trackedLiquidityETH = getTrackedLiquidityUSD(pair.reserve0, token0, pair.reserve1, token1).div(bundle.ethPrice)
+    trackedLiquidityETH = getTrackedLiquidityUSD(pair.reserve0, token0 as Token, pair.reserve1, token1 as Token).div(
+      bundle.ethPrice
+    )
   } else {
     trackedLiquidityETH = ZERO_BD
   }
@@ -410,7 +412,7 @@ export function handleMint(event: Mint): void {
   mint.save()
 
   // Update the LP position
-  let liquidityPosition = createLiquidityPosition(event.address, mint.to as Address)
+  let liquidityPosition = createLiquidityPosition(event.address, Address.fromBytes(mint.to))
   createLiquiditySnapshot(liquidityPosition, event)
 
   // Update day entities
@@ -504,7 +506,8 @@ export function handleBurn(event: Burn): void {
   burn.save()
 
   // Update the LP position
-  let liquidityPosition = createLiquidityPosition(event.address, burn.sender as Address)
+
+  let liquidityPosition = createLiquidityPosition(event.address, Address.fromBytes(burn.sender!))
   createLiquiditySnapshot(liquidityPosition, event)
 
   // Update day entities
