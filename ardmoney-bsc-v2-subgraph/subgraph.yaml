@@ -1,16 +1,16 @@
 specVersion: 0.0.4
-description: ArdMoney BSC TestNet Subgraph
-repository: https://github.com/DiverseSolutions/ardmoney-subgraphs
+description: ArdMoney BNB V2 Subgraph
+repository: https://github.com/DiverseSolutions/Ardmoney-BNB-Subgraph-v2
 schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
     name: Factory
-    network: chapel
+    network: bsc
     source:
-      address: '0xBB7A6269aB305283875393162734C285B03ca327'
+      address: '0xebBf47C12f2081F96bd86aCd069d241FEcD7D1f3'
       abi: Factory
-      startBlock: 23173134
+      startBlock: 19337568
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -34,7 +34,7 @@ dataSources:
 templates:
   - kind: ethereum/contract
     name: Pair
-    network: chapel
+    network: bsc
     source:
       abi: Pair
     mapping:

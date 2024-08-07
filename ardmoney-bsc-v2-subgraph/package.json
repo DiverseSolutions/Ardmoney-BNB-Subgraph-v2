@@ -1,12 +1,13 @@
 {
-  "name": "ardmoney-chapel-subgraph",
+  "name": "ardmoney-bnb-subgraph",
   "version": "1.0.0",
   "repository": "https://github.com/DiverseSolutions/Ardmoney-BNB-Subgraph-v2",
   "license": "GPL-3.0-or-later",
   "scripts": {
     "codegen": "graph codegen --output-dir src/types/",
+    "auth": "graph auth --studio 0ea43d347b7182728bc29892d83df383",
     "build": "graph build",
-    "deploy": "graph deploy  --access-token 59eafc0aeb2946e2bca764748ee401cb mnkhod/ardmoney-chapel-v4-subgraph --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --debug",
+    "deploy": "graph deploy --studio ardmoney-bnb-subgraph-v2",
     "all": "npm run codegen && npm run build && npm run deploy"
   },
   "devDependencies": {
