@@ -1,7 +1,7 @@
 {
   "name": "ardmoney-chapel-subgraph",
   "version": "1.0.0",
-  "repository": "https://github.com/DiverseSolutions/ArdMoney-BSC-TestNet-Subgraph",
+  "repository": "https://github.com/DiverseSolutions/Ardmoney-BNB-Subgraph-v2",
   "license": "GPL-3.0-or-later",
   "scripts": {
     "codegen": "graph codegen --output-dir src/types/",
